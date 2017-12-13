@@ -4,9 +4,7 @@ title: "milestone"
 description: "代表作"
 header-img: "img/zhihu.jpg"
 ---
-
-Nicholas Blog Mileston
-
+CNN流程简单梳理
 
 
 
