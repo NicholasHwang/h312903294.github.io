@@ -1,0 +1,900 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CNN,DeepLearning," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nicholas Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="CNN流程简单梳理">
+<meta name="keywords" content="CNN, DeepLearning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CNN流程简单梳理">
+<meta property="og:url" content="http://localhost:4000/2017/12/13/cnn-note/">
+<meta property="og:site_name" content="Nicholas Blog">
+<meta property="og:description" content="CNN流程简单梳理">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://www.mathworks.com/content/mathworks/www/en/discovery/convolutional-neural-network/jcr:content/mainParsys/image_copy.adapt.full.high.jpg/1492406018870.jpg">
+<meta property="og:image" content="https://www.researchgate.net/profile/B_Mesman/publication/220785200/figure/fig1/AS:340720692023305@1458245551937/Fig-1-An-Example-CNN-architecture-for-a-handwritten-digit-recognition-task.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/h312903294/MarkdownPicRep/master/convSobel.gif">
+<meta property="og:image" content="https://github.com/h312903294/MarkdownPicRep/raw/master/FCLayer%402x.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CNN流程简单梳理">
+<meta name="twitter:description" content="CNN流程简单梳理">
+<meta name="twitter:image" content="https://www.mathworks.com/content/mathworks/www/en/discovery/convolutional-neural-network/jcr:content/mainParsys/image_copy.adapt.full.high.jpg/1492406018870.jpg">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>CNN流程简单梳理</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nicholas Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/2017/12/13/cnn-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nicholas Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nicholas Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            CNN流程简单梳理
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-13T00:00:00+08:00">
+                2017-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="cnn流程简单梳理">CNN流程简单梳理</h1>
+
+<p>我理解的CNN就是一个模拟人脑认知的网络，通过filter（或者叫kernel）识别数据特征——类比人眼对数据生成电信号，对特征利用各种数学运算以完成区分——模拟人脑中的神经元对电信号的反应，多次重复这个过程以达到识别、认知的目的。</p>
+
+<!-- CNN整体图 -->
+<p>先用几张图来比较形象的观察下CNN的流程：</p>
+
+<p><img src="https://www.mathworks.com/content/mathworks/www/en/discovery/convolutional-neural-network/jcr:content/mainParsys/image_copy.adapt.full.high.jpg/1492406018870.jpg" alt="CNN1" /></p>
+
+<p>该图来源于<a href="https://www.mathworks.com/content/mathworks/www/en/discovery/convolutional-neural-network/jcr:content/mainParsys/image_copy.adapt.full.high.jpg/1492406018870.jpg">pic source1</a></p>
+
+<p>在这张图上，可以看到左边的一张车的图片输入到CNN后，右边会出来多个识别结果，比如小汽车(car)，卡车(truck)，面包车(van)，自行车(bicycle)等，每个结果会对应一个0到1的概率，概率值越大表示属于这个结果的可能性越大。</p>
+
+<p><img src="https://www.researchgate.net/profile/B_Mesman/publication/220785200/figure/fig1/AS:340720692023305@1458245551937/Fig-1-An-Example-CNN-architecture-for-a-handwritten-digit-recognition-task.png" alt="CNN2" /></p>
+
+<p>该图来源于<a href="https://www.researchgate.net/profile/B_Mesman/publication/220785200/figure/fig1/AS:340720692023305@1458245551937/Fig-1-An-Example-CNN-architecture-for-a-handwritten-digit-recognition-task.png">pic source2</a></p>
+
+<p>在这张图上，形象的表示了特征图(feature map)。</p>
+
+<p>通过这两张图，我们能够看出共性的东西：
+<strong>1.</strong> 都有卷积层(convolution layer)，并且卷积层会有多个，卷积层包含两个操作，卷积(convolution)和ReLU。
+<strong>2.</strong> 都有池化层(pooling layer or subsampling layer)，它的输入就是卷积层的输出。但是不能认为每一个卷积层后面就会有一个池化层，可以多个卷积层后接一个池化层。
+<strong>3.</strong> 都有全连接层(fully connected layer)，它就是把前面计算出来的结果两两相乘。需要注意的是，在第一个全连接层的输入处有一个拉平(flatten)的操作，它是把在这层之前的池化层的结果拉平成一个[1, N_Classes]，其中N_Classes就是需要识别的标签的个数。</p>
+
+<p>看过了CNN的内部结构，相当于认识了CNN的“硬件”是怎样构成的，现在我们需要了解下CNN的“软件”是怎样运作的。推荐<a href="https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks/">A-Beginner’s-Guide-To-Understanding-Convolutional-Neural-Networks</a>的Training小节。一句话总结就是，CNN的更新权值(weight)的过程叫后向传播(backpropagation)。后向传播由前向传递(forward pass)、损失函数(loss function)、后向传递(backward pass)和权值更新(weight update)四部分组成，后向传播算法的原理请看<a href="http://www.deeplearningbook.org/">《deep learning》</a>6.5节。后向传播算法主要是用于计算梯度，而另一种算法，比如随机梯度下降(SGD)、Adam，用该梯度来进行学习。</p>
+
+<p>以下均用Google的tensorflow框架做代码演示。</p>
+
+<h2 id="卷积层convolutioanl-layer">卷积层（Convolutioanl Layer)</h2>
+<h3 id="卷积运算">卷积运算</h3>
+<h4 id="什么是卷积">什么是卷积</h4>
+<p>卷积的<a href="https://en.wikipedia.org/wiki/Convolution">wiki</a>，我找到的一个比较好的说明<a href="https://www.zhihu.com/question/22298352">知乎</a>。我个人自己总结的话，就是对两个同维矩阵做点积之后的新矩阵中的每个值求和。每个和就是一个特征（feature），这也就是过滤的过程。</p>
+
+<p>其实这种通过提取特征而识别整体的过程，古代就已经出现了，而且我们还学习了相关课文的，即盲人摸象。
+每个盲人只感知了象的一部分，把他们所有的意见合并起来，就形成了一个完整的象。
+如果上面这个举例还不够清楚的话，那我再举个例子。
+假如我们在一个绝对黑暗的房间，我们在这个房间地面的中心，右手有一个手电筒，面对着一个有蒙娜丽莎画面的墙壁。当我们举起右手的手电筒，从上往下，从左至右，依次照射，那么从每一次的照射中就看到了一小块区域，当手电筒照到右下角的时候，整个过程完毕，而我们也形成了对蒙娜丽莎的整体认知。</p>
+
+<p>卷积运算的核心是filter，又称kernel。根据名字我们能够猜测出，这个核心就是一个过滤器，他把特征过滤出来，然后输入到后续的网络流程中。
+那么怎样实现过滤，怎样对过滤的结果做区分呢？这就是本小节和后面的ReLU、池化层所涉及的。</p>
+<h4 id="卷积的实现">卷积的实现</h4>
+<p>用一个图来形象的说明：</p>
+
+<p><img src="https://raw.githubusercontent.com/h312903294/MarkdownPicRep/master/convSobel.gif" alt="pic" /></p>
+
+<p>该图来源于<a href="https://mlnotebook.github.io/post/CNN1/">Convolutional Neural Networks - Basics</a></p>
+
+<p>在tensorflow中，关于convolution的说明在<a href="https://www.tensorflow.org/api_guides/python/nn#Convolution">这里</a>
+在tensorflow中，执行卷积运算的api是<a href="https://www.tensorflow.org/api_docs/python/tf/nn/conv2d">tf.nn.conv2d</a>。在该api中，我们需要注意的是以下几个参数：</p>
+
+<p><strong>1. input</strong>——相当于上面小黑屋举例中的那幅蒙娜丽莎的画——该变量是一个4阶的张量（a 4D tensor），shape表示为[batch,in_height,in_width,in_channels]。其中batch表示每次训练的时候输入一批图片的大小，一般填-1，表示运行时确定。in_heigth和in_width表示input的高和宽。in_channels表示input的通道个数，以图片举例，我们知道色彩有<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E8%89%B2">三原色RGB</a>，那么用矩阵来表示一个图片的时候，每种颜色都要对应一个矩阵，所以一张图片有三个矩阵，这里就可以把矩阵和通道等价起来。所以如果一个input数据需要多个通道（矩阵）来表示的话，我们需要通过指定in_channels的值来表示通道的个数，以保证后续各种运算的正确。</p>
+
+<p><strong>2. filter</strong>——相当于上面提到的手电筒——是一个4阶的张量（a 4D tensor），shape表示为[height,width,in_channels,out_channels]，其中height和width的值建议是奇数且相等，之所以选择奇数，可以参考<a href="https://www.reddit.com/r/MachineLearning/comments/36rd91/any_reason_behind_the_fact_that_the_filter_size/">Quora</a>和<a href="https://www.zhihu.com/question/51603070">知乎</a>。我个人的理解就是，如果使用奇数，filter会有一个中心点，这样的话filter在input上的移动会以中心点为基准，另外就是在input的边缘补零的话有一个中心点的话可以对称的补零。</p>
+
+<p><strong>3. strides</strong>——确定filter每次移动的步进，就是上面例子中移动手电筒的方式，是每次都和之前照射的区域覆盖一部分呢，还是相切呢等等——该变量也是一个4阶的张量(a 4D tensor)，shape表示为[1, stride, stride, 1]，Google给的解释如下：</p>
+<blockquote>
+  <p>Must have strides[0] = strides[3] = 1. For the most common case of the same horizontal and vertices strides</p>
+</blockquote>
+
+<p>至于strides[1]和strides[2]的具体大小，可以参考已有的model，然后多炼金几次，🙂</p>
+
+<p><strong>4. padding</strong>——这是为了解决手电筒照射到蒙娜丽莎的四条边的时候，边界外面那些没有颜料的地方怎么办的问题——它只有两个值，”SAME”, “VALID”。这两个值对应的操作在<a href="https://www.tensorflow.org/api_guides/python/nn#Convolution">这里</a>，一篇<a href="http://blog.csdn.net/lujiandong1/article/details/53728053">csdn的blog</a>也比较形象的解释了这两个值。</p>
+
+<p>通过上面的梳理，我们发现，只有filter是一个不能确定值的变量，它的值不是人为指定的。
+这就是为什么Deep Learning中有一个learning的原因之一，因为filter的值的更新是通过整过网络训练过程中学习来的。</p>
+
+<p>由于上面提到的filter的不确定，我们只会给filter一个初始化的操作，执行这个操作的api是<a href="https://www.tensorflow.org/api_docs/python/tf/truncated_normal_initializer">tf.truncated_normal_initializer</a>。关于截断正态分布，<a href="https://www.zhihu.com/question/49923924">知乎</a>的这个最高票说的很好，一句话就是在某个范围内做正态分布。为什么要正态分布，因为要加入少量的噪声来打破对称性和避免0梯度。如果是完全随机的话，我们后续无法通过梯度下降来更新filter，使用正态分布，能保证filter的初始值是在一个有限范围内，并且比较集中，当后续梯度下降的时候，按照向微分相反方向下降的规则，就可以迅速更新filter。</p>
+
+<p>一般来说，我们使用tf.truncated_normal_initializer，只修改stddev这个参数，即<a href="https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E5%B7%AE">标准差</a>。这就意味着，filter的值是以0为均值的一个截断正态分布。stddev的取值可以参考已有模型，我习惯取0.1。</p>
+
+<p>那么卷积的操作就完了？并没有，而且后面这个操作也是非常重要的！</p>
+
+<p>当我们调用完tf.nn.conv2d，需要对结果加biases（偏置项），即：
+<script type="math/tex">Y = \sum (weight * input) + bias</script></p>
+
+<p>bias是一个初始化为非常小的正数的常数——通过调用tf.constant_initializer。
+增加这个偏置项的意义可以参考<a href="https://stackoverflow.com/questions/25792577/is-the-bias-node-necessary-in-very-large-neural-networks">stackoverfow</a>和另一个<a href="https://stackoverflow.com/questions/2480650/role-of-bias-in-neural-networks">stackoverflow</a>，在这两个问题的received answer中都提到了一个单词，shift。
+我个人的理解是，当过滤了一个特征出来，为了让这个特征更加的泛化（generalization），需要调整这个特征以让他适配更大范围内的差值，因此加一个bias。用线性方程$y=f(x)+b$举例，$y=f(x)+b (b&gt;0)$对$y=f(x)$做了b大小的平移，如果令$y=f(x)+b&gt;0$，那么相同$y$的取值范围，得到的$x$的取值范围比$y=f(x)&gt;0$大。</p>
+
+<p>至此，卷积的原理和过程都梳理完毕，它是一个CNN能工作的基石。</p>
+<h3 id="relu">ReLU</h3>
+<p>先解释一下神经网络中激活函数（activation function）的概念。激活函数的<a href="https://en.wikipedia.org/wiki/Activation_function">wiki</a>用digital network做类比，<a href="https://medium.com/the-theory-of-everything/understanding-activation-functions-in-neural-networks-9491262884e0">Understanding Activation Functions in Neural Networks</a>用人脑做类比。我个人总结，一句话：O不OK？（请自行脑补声音）。如果不OK，那么就放弃，如果OK，那么先留下这个卷积结果再等待后续处理。这类函数降低了整个网络的复杂度，因为他去除了一些卷积结果。如果前面的英文看起来有难度，这里有个<a href="https://www.zhihu.com/question/22334626">知乎</a>上的问题还是能解决你的疑惑的。如果还不理解，那么我们用CNN模拟的对象，即人脑做说明。我们知道，人脑中的神经元是通过电信号的刺激来做出反应的，既然是电信号那么就会有电压，如果电压不够，刺激不了神经元，那么对这个电信号就会被放弃。因为你都不能刺激神经元，那对人脑来说你就是辣鸡，所以需要去其糟粕，留其精华。</p>
+
+<p>ReLU，是Rectified Linear Unit的简写，中文名线性整流函数，它的<a href="https://zh.wikipedia.org/wiki/%E7%BA%BF%E6%80%A7%E6%95%B4%E6%B5%81%E5%87%BD%E6%95%B0">wiki</a>。
+函数形式$f(x)=max(0,x)$，这个函数也有几个变种，在它的wiki中有介绍。</p>
+
+<p>为什么现在很多选用ReLU做激活函数？<a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf">AlexNet</a>的3.1节从工程训练方面解释了用ReLU能减少时间且保证效果，<a href="http://www.cnblogs.com/neopenx/p/4453161.html">ReLU激活函数</a>从生物神经方面来解释，<a href="https://www.zhihu.com/question/29021768">知乎</a>这个问题下面的回答也解释了为啥“钦定”ReLU来做激活函数。还有就是ReLU对解决梯度消失问题(vanishing gradient problem，<a href="https://en.wikipedia.org/wiki/Vanishing_gradient_problem">wiki</a>)的效果很好。</p>
+
+<p>当然，ReLU不是适用于所有模型的。如果你的训练效果不理想，不妨从换一个激活函数入手。</p>
+<h2 id="池化层">池化层</h2>
+<h3 id="pooling">pooling</h3>
+<p>pooling层也叫downsampling层，它的作用是两个：
+<strong>1. 当输入作出少量平移时，pooling能够帮助输入的表示近似不变</strong>
+<strong>2. 保留主要特征同时减少参数和计算量，防止过拟合，提高模型泛华能力</strong>。
+具体可以参考<a href="https://www.zhihu.com/question/36686900">知乎</a>，更加详细的可以看<a href="http://www.deeplearningbook.org/">《deep learning》</a>的9.3和9.4节。</p>
+
+<p>pooling的实现由几种方式，max pooling，average pooling和L2-norm pooling等，目前一般使用max pooling，即取pool size中的最大值。在tensorflow中的api是tf.nn.maxpool，它的参数中ksize的第二、三个参数上一层filter的宽和高。</p>
+
+<h3 id="local-response-normalization">local response normalization</h3>
+<p>根据<a href="https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf">AlexNet</a>这个主要是为了在数据量较大的情况下，防止神经元出现饱和——即对各种输入数据都满足，增加泛化能力。根据<a href="https://prateekvjoshi.com/2016/04/05/what-is-local-response-normalization-in-convolutional-neural-networks/">What Is Local Response Normalization In Convolutional Neural Networks</a>，lrn参考了神经学上的侧面抑制(lateral inhibition)，并且配合ReLU有奇效。<a href="https://www.quora.com/Why-would-a-saturated-neuron-be-a-problem">Quora</a>上的这个回答解释了什么是饱和的神经元</p>
+<blockquote>
+  <p>We say that a neuron is saturated for these activation functions when it takes on values that are close to the boundaries of this range.</p>
+</blockquote>
+
+<p>并且说明了饱和的神经元是怎样影响训练的。</p>
+
+<p>但是，目前有观点说lrn没啥用，请看<a href="https://www.zhihu.com/question/26871787">知乎</a>，在这个<a href="https://books.google.com/books?id=H2c9DwAAQBAJ&amp;pg=PA300&amp;lpg=PA300&amp;dq=lrn++layer+++effect&amp;source=bl&amp;ots=FWmNM7ULqG&amp;sig=osAUQHWKvCE6B0Mmk3qXLu_J36c&amp;hl=zh-CN&amp;sa=X&amp;ved=0ahUKEwjJ7s2zyIHYAhXI1IMKHTfXCGQQ6AEIZzAH#v=onepage&amp;q=lrn%20%20layer%20%20%20effect&amp;f=false">链接</a>中给出了移除lrn层后，精度只有小于0.1%的减少，这个和增加lrn层所带来的复杂度比起来，完全是可以接受的。看来要针对具体的模型做实验了。</p>
+
+<h2 id="全连接层">全连接层</h2>
+<h3 id="全连接运算">全连接运算</h3>
+<p>全连接(fully connected)，其实从名字就可以看出这层主要是把前面的所有运算结果全部“链接”在一起。这里有一个图比较形象的表示了这个运算：</p>
+
+<p><img src="https://github.com/h312903294/MarkdownPicRep/raw/master/FCLayer%402x.png" alt="全连接示意图" /></p>
+
+<p>这一层的目的主要是对之前提取到的特征进行更高一级的提取。比如，通过之前的运算，我们得到了N段圆弧，如果要最终组成一个圆，就需要把这N段圆弧拼装到一起。
+全连接层的输出是一个N维的向量，最后一层的维数是需要分辨的标签(label)的个数，因为最后会用softmax对最后一个全连接层的输出做归一化，以计算每个标签的概率，从而得到这一次训练的结果，然后同原始数据所对应的标签做比较。</p>
+
+<p>在tensorflow中，tf.nn.matmul完成全连接的运算操作，然后用tf.nn.relu对matmul的结果做非线性整理。</p>
+<h3 id="dropout">dropout</h3>
+<p>在全连接层后增加dropout，是为了解决过拟合，在<a href="https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf">AlexNet</a>的4.2节有论述。这篇<a href="http://blog.csdn.net/hjimce/article/details/50413257">blog</a>我认为说的比较全，从原理到实现都基本涉及到了。还有一篇<a href="http://blog.csdn.net/stdcoutzyx/article/details/49022443">blog</a>对论文的分析很不错，我很赞同用有性繁殖和无性繁殖来类比dropout的作用，有性繁殖之所以能适应更加复杂的环境，是因为它既能把优良基因传下去，也能让有害基因有概率的传不下去。</p>
+
+<p>在tensorflow中，使用tf.nn.dropout完成该操作，它的参数keep_prob一般设置0.5——来源于上面的AlexNet，即丢弃一半的全连接结果。那么每次训练后，只有一半的结果会进入到后向传播的处理中。</p>
+
+<p>前向传递(forward pass)包含了卷积层(convolution layer)、池化层(pooling layer)和全连接层(fully connected layer)。</p>
+
+<p>当这个过程结束后，需要对训练的结果进行评估，这个评估一般用损失函数(loss function)来做。它的<a href="https://en.wikipedia.org/wiki/Loss_function">wiki</a>，<a href="https://www.zhihu.com/question/52398145">知乎</a>和<a href="http://www.csuldw.com/2016/03/26/2016-03-26-loss-function/">blog</a>两个联合起来看能比较好的了解损失函数的构成，即由经验风险函数和结构风险函数组成：</p>
+
+<script type="math/tex; mode=display">\theta^* = \arg \min_\theta \frac{1}{N}{}\sum_{i=1}^{N} L(y_i, f(x_i; \theta)) + \lambda\  \Phi(\theta)</script>
+
+<p>对于分类问题，使用比较广泛的损失函数是交叉熵，<a href="https://www.zhihu.com/question/41252833">知乎</a>比较好的解释了交叉熵。这里有一篇<a href="http://blog.csdn.net/marsjhao/article/details/72630147">blog</a>介绍了在tensorflow中的4个交叉熵相关函数。</p>
+
+<p>后向传递(backward pass)</p>
+
+<p>权值更新(weight update)</p>
+
+<h2 id="参考">参考</h2>
+<p><a href="https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks/">A-Beginner’s-Guide-To-Understanding-Convolutional-Neural-Networks</a></p>
+
+<p><a href="https://code.google.com/archive/p/cuda-convnet/wikis/LayerParams.wiki">LayerParams</a></p>
+
+<p><a href="http://lamda.nju.edu.cn/weixs/project/CNNTricks/CNNTricks.html">Must Know Tips/Tricks in Deep Neural Networks (by Xiu-Shen Wei)</a></p>
+
+<p><a href="http://www.deeplearningbook.org/">《Deep Learning》</a></p>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/CNN" rel="tag"># CNN</a>
+          
+            
+            <a href="/tag/#/DeepLearning" rel="tag"># DeepLearning</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="Nicholas Huang" />
+          <p class="site-author-name" itemprop="name">Nicholas Huang</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#cnn流程简单梳理"> <span class="nav-number">1</span> <span class="nav-text">CNN流程简单梳理</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#卷积层convolutioanl-layer"> <span class="nav-number">1.1</span> <span class="nav-text">卷积层（Convolutioanl Layer)</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#卷积运算"> <span class="nav-number">1.1.1</span> <span class="nav-text">卷积运算</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-4"> <a class="nav-link" href="#什么是卷积"> <span class="nav-number">1.1.1.1</span> <span class="nav-text">什么是卷积</span> </a> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li> <li class="nav-item nav-level-4"> <a class="nav-link" href="#卷积的实现"> <span class="nav-number">1.1.1.2</span> <span class="nav-text">卷积的实现</span> </a> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#relu"> <span class="nav-number">1.1.2</span> <span class="nav-text">ReLU</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#池化层"> <span class="nav-number">1.2</span> <span class="nav-text">池化层</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#pooling"> <span class="nav-number">1.2.1</span> <span class="nav-text">pooling</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#local-response-normalization"> <span class="nav-number">1.2.2</span> <span class="nav-text">local response normalization</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#全连接层"> <span class="nav-number">1.3</span> <span class="nav-text">全连接层</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#全连接运算"> <span class="nav-number">1.3.1</span> <span class="nav-text">全连接运算</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#dropout"> <span class="nav-number">1.3.2</span> <span class="nav-text">dropout</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> </li></ol> </li></ol> </li></ol> </li></ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#参考"> <span class="nav-number">1.4</span> <span class="nav-text">参考</span> </a> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child"> <ol class="nav-child">
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nicholas Huang</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
