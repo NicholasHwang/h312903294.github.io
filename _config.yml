@@ -6,7 +6,7 @@
 # Site
 title: Nicholas Blog
 subtitle:
-description:
+description: Store every step in my study and work life
 author: Nicholas Huang
 # Support language: de, en, fr-FR, id, ja, ko, pt-BR, pt, ru, zh-Hans, zh-hk, zh-tw
 language: en
@@ -212,8 +212,8 @@ font:
 # Social Links
 # Key is the link label showing to end users.
 # Value is the target link (E.g. GitHub: https://github.com/iissnan)
-#social:
-  #LinkLabel: Link
+social:
+        GitHub: https://github.com/h312903294
 
 
 # Social Links Icons
