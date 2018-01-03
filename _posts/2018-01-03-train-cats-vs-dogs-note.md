@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 训练cats_vs_dogs心得
-data: 2018-01-03
+date: 2018-01-03
 author: Nicholas Huang
 header-img: 
 categories: CNN

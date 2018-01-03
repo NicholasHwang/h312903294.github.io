@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Effective Modern C++ 笔记
-data: 2018-01-03
+date: 2018-01-03
 author: Nicholas Huang
 header-img: 
 categories: C++
