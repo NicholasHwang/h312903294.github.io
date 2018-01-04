@@ -2,8 +2,8 @@
 layout: post
 title: Effective Modern C++ 笔记
 date: 2018-01-03
+updated: 2018-01-04
 author: Nicholas Huang
-header-img: 
 categories: C++
 tags:
     - C++
@@ -48,4 +48,35 @@ std::array<int, arraySize(keyVals)> mappedVals;
 ```
 
 函数做参数时的推导同数组一样
+
+## Item2: Understand auto type deduction
+auto的推导和Item1中讲的template的推导，除了一个例外，其余都是相同的。
+>As you can see, auto type deduction works like template type deduction. They're essentially two sides of the same coin.
+
+那么例外的情况如下：
+
+```
+auto x1 = 27;   // type is int, value is 27
+auto x2(27);    // ditto
+auto x3 = {27}; // type is std::initializer_list<int>, value is {27}
+auto x4{27};    // ditto
+```
+可以看到第一个和第二个auto的推导和Item1中的规则是一样，但是，第三个和第四个auto的推导是根据这么一条规则：
+>When the initializer for an auto-declared variable is enclosed in braces, the deduced type is a std::initializer_list. If such a type can't be deduced(e.g., because the values in the braced initializer are of different types), the code will be rejected.
+
+对于braced initializers在template中的运用如下：
+
+```
+template<typename T>
+void f(T param);
+f({1, 2, 3});//error! can't deduce type for T
+
+template<typename T>
+void f(std::initializer_list<T> initList);
+f({1, 2, 3});// T deduced as int, and initList's type is std::initializer_list<int>
+```
+
+为啥对于braced initializers——也就是C++11新增的那个统一初始化——auto推导和template推导不同，大佬Scott Meyers和你一样，也想知道，摊手.jpg。
+在C++14中，auto可以用在函数的返回类型上和lamda的参数声明上。实际上，这些地方的auto都是用模板类型推导规则而不是auto推导规则，也就是说braced initializer是不能用到这些地方的。
+
 
