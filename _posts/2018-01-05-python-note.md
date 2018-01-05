@@ -2,7 +2,7 @@
 layout: post
 title: Python学习笔记
 date: 2018-01-05
-updated: 2018-01-05
+updated: 
 author: Nicholas Huang
 categories: Python
 tags:
@@ -16,19 +16,19 @@ import time
 def exeTime(func):
     def newFunc(*args, **args2):
         t0 = time.time()
-        print "%s, {%s} start" % (time.strftime("%X", time.localtime()), func.__name__)
-        back = func(*args, **args2);
-        print "%s, {%s} end" % (time.strftime("%X", time.localtime()),func.__name__)
-        print "%.3fs taken for {%s}" % (time.time() - t0, func.__name__)
-    return back
-return newFunc
-    
+        print "%s, %s start" % (time.strftime("%X", time.localtime()), func.__name__)
+        back = func(*args, **args2)
+        print "%s, %s end" % (time.strftime("%X", time.localtime()),func.__name__)
+        print "%.3fs taken for %s" % (time.time() - t0, func.__name__)
+        return back
+    return newFunc
+
 @exeTime
 def foo():
     for i in xrange(1000000):
         pass
 ```
-还有一种就是超过一定时间打印bad，没超过打印good
+还有一种就是超过一定时间打印bad，没超过打印good：
 
 ```
 def exeTime(t):
