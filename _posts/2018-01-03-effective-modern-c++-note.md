@@ -79,4 +79,92 @@ f({1, 2, 3});// T deduced as int, and initList's type is std::initializer_list<i
 为啥对于braced initializers——也就是C++11新增的那个统一初始化——auto推导和template推导不同，大佬Scott Meyers和你一样，也想知道，摊手.jpg。
 在C++14中，auto可以用在函数的返回类型上和lamda的参数声明上。实际上，这些地方的auto都是用模板类型推导规则而不是auto推导规则，也就是说braced initializer是不能用到这些地方的。
 
+# Item3: Understand decltype
+通常情况：
+
+```
+const int i = 0;        //decltype(i) is const int
+bool f(const Widget& w);//decltype(w) is const Widget&
+                        //decltype(f) is bool(cont Widget&)
+
+struct Point {
+    int x, y;           //decltype(Point::x) is int, same as Point::y
+};
+
+Widget w;               //decltype(w) is Widget
+
+if(f(w))...             //decltype(f(w)) is bool
+
+template<typename T>
+class vector{
+    public:
+        ...
+        T& operator[](std::size_t index);
+        ...
+};
+vector<int> v;          //decltype(v) is vector<int>
+if(v[0] == 0)...        //decltype(v[0]) is int&
+```
+在C++11中，auto单独用在表示函数返回类型的时候，不会执行类型推导，需要搭配尾随返回类型(trailing return type)，代码如下：
+
+```
+template<typename Container, typename Index>        //need refinement
+auto authAndAccess(Container& c, Index i)
+  -> decltype(c[i])
+{
+    authenticateUser();
+    return c[i];
+}
+
+template<typename Container, typename Index>        //final version
+auto authAndAccess(Container&& c, Index i)          //because we do not know 
+-> decltype(std::forward<Container>(c)[i])          //what c will be, a rvalue or 
+{                                                   //a lvalue, so we use 
+    authenticateUser();                             //universal reference
+    return std::forward<Container>(c)[i];
+}
+```
+
+
+```
+template<typename Container, typename Index>        //need refinement
+decltype(auto)
+authAndAccess(Container& c, Index i)
+{
+    authenticateUser();
+    return c[i];
+}
+
+template<typename Container, typename Index>        //final version
+decltype(auto)                                      //because we do not know
+authAndAccess(Container&& c, Index i)               //what c will be, a rvalue or       
+{                                                   //a lvalue, so we use 
+    authenticateUser();                             //universal reference
+    return std::forward<Container>(c)[i];
+}
+```
+还有就是decltype对于变量名和比变量名复杂的左值表达式的推导是不同的，如下：
+
+```
+int x = 0;          //decltype(x) is int
+int (x) = 0;        //decltype((x)) is int&
+```
+因此在C++14中应用decltype(auto)的时候要注意返回语句中的一个细小改变会影响度你这个函数的推导类型，如下：
+
+```
+decltype(auto) f1()
+{
+    int x = 0;
+    ...
+    return x;           //decltype(x) is int, so f1 returns int
+}
+
+decltype(auto) f2()
+{
+    int x = 0;
+    ...
+    return (x);         //decltype((x)) is int&, so f2 returns int& 
+}
+```
+
 
