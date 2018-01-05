@@ -2,7 +2,7 @@
 layout: post
 title: Effective Modern C++ 笔记
 date: 2018-01-03
-updated: 2018-01-04
+updated: 2018-01-05
 author: Nicholas Huang
 categories: C++
 tags:
