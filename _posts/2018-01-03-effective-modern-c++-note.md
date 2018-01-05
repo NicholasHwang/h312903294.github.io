@@ -79,7 +79,7 @@ f({1, 2, 3});// T deduced as int, and initList's type is std::initializer_list<i
 为啥对于braced initializers——也就是C++11新增的那个统一初始化——auto推导和template推导不同，大佬Scott Meyers和你一样，也想知道，摊手.jpg。
 在C++14中，auto可以用在函数的返回类型上和lamda的参数声明上。实际上，这些地方的auto都是用模板类型推导规则而不是auto推导规则，也就是说braced initializer是不能用到这些地方的。
 
-# Item3: Understand decltype
+## Item3: Understand decltype
 通常情况：
 
 ```
